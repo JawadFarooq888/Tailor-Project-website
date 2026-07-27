@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom';
 import PriceTag from '../common/PriceTag';
 import StarRating from '../common/StarRating';
 import { useAuth } from '../../context/AuthContext';
-import api from '../../api/client';
+import api, { resolveImageUrl } from '../../api/client';
 import { useState } from 'react';
 
 export default function ProductCard({ product, wishlist = [], onWishlistToggle }) {
   const { user } = useAuth();
   const [busy, setBusy] = useState(false);
   const isWished = wishlist.includes(product._id);
-  const image = product.images?.[0];
+  const image = resolveImageUrl(product.images?.[0]);
 
   const toggleWishlist = async (e) => {
     e.preventDefault();

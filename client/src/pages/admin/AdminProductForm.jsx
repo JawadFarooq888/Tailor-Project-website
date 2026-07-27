@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../../api/client';
+import api, { resolveImageUrl } from '../../api/client';
 import Loader from '../../components/common/Loader';
 import { inputClass, labelClass, btnPrimary, btnOutline } from '../../styles/ui';
 
@@ -203,7 +203,7 @@ export default function AdminProductForm() {
                     removeImages.includes(img) ? 'border-burgundy opacity-40' : 'border-taupe/30'
                   }`}
                 >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
+                  <img src={resolveImageUrl(img)} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>

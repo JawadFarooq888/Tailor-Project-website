@@ -73,6 +73,28 @@ Runs on **http://localhost:5173**. The Vite dev server proxies `/api` and `/uplo
 - Storefront: http://localhost:5173 — browse, filter, add to cart, checkout (COD or manual bank transfer), track orders from "My Dashboard".
 - Admin panel: http://localhost:5173/admin/login — log in with the seeded admin account to manage products, inventory, categories, orders (status updates auto-adjust stock), customers, and reviews.
 
+## Deployment (frontend on Vercel, backend on Render/Railway)
+
+This is two separate apps (`client/`, `server/`) — they need to be deployed as **two separate projects**, not one. Deploying the whole repo as a single Vercel project (no Root Directory set) is what causes a `404: NOT_FOUND` — Vercel has no framework/build config at the repo root.
+
+### 1. Backend → Render or Railway
+Express with local file uploads and a persistent MongoDB connection needs an always-on Node process — Vercel's serverless functions don't fit this without a rewrite (ephemeral filesystem breaks image uploads). Render/Railway run it as-is:
+- New Web Service, point at this repo, **Root Directory: `server`**
+- Build command: `npm install` · Start command: `npm start`
+- Env vars: `MONGO_URI` (MongoDB Atlas connection string — local MongoDB won't be reachable from Render), `JWT_SECRET`, `CLIENT_URL` (your Vercel URL, set after step 2, no trailing slash), `NODE_ENV=production`. `PORT` is injected automatically.
+- Note: on most Render/Railway plans the filesystem is ephemeral — uploaded product images can be lost on redeploy/restart. Fine for testing; move to Cloudinary/S3 before relying on this in production.
+
+### 2. Frontend → Vercel
+- New Project → import this repo → **Root Directory: `client`** (this is the setting that was missing and caused the 404)
+- Framework Preset: Vite · Build command: `npm run build` · Output directory: `dist` (all auto-detected once Root Directory is set correctly)
+- Env var: `VITE_API_URL=https://your-backend.onrender.com/api` (point at step 1's deployed URL)
+- `client/vercel.json` already handles SPA routing so deep links like `/shop` or `/admin/login` don't 404 on refresh.
+
+### 3. Wire them together
+- Update the backend's `CLIENT_URL` env var to the real Vercel URL and redeploy the backend (needed for CORS).
+- Cross-domain auth cookies: the backend already sends `SameSite=None; Secure` in production (see `server/src/utils/token.js`) so login persists across the Vercel ↔ Render domains — this only works over HTTPS, which both platforms provide by default.
+- Re-run `npm run seed` against the Atlas database (from your machine, with `MONGO_URI` pointed at Atlas) to get the admin account and demo products.
+
 ## Scope
 
 ### Built in this MVP

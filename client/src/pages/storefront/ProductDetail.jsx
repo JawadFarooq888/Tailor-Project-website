@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../../api/client';
+import api, { resolveImageUrl } from '../../api/client';
 import Loader from '../../components/common/Loader';
 import PriceTag from '../../components/common/PriceTag';
 import StarRating from '../../components/common/StarRating';
@@ -93,7 +93,7 @@ export default function ProductDetail() {
         <div>
           <div className="aspect-[3/4] overflow-hidden rounded-lg bg-ivory-dark">
             {product.images?.[activeImage] ? (
-              <img src={product.images[activeImage]} alt={product.name} className="h-full w-full object-cover" />
+              <img src={resolveImageUrl(product.images[activeImage])} alt={product.name} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full items-center justify-center text-taupe">No image</div>
             )}
@@ -108,7 +108,7 @@ export default function ProductDetail() {
                     i === activeImage ? 'border-gold' : 'border-taupe/30'
                   }`}
                 >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
+                  <img src={resolveImageUrl(img)} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>

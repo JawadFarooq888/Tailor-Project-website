@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../../api/client';
+import api, { resolveImageUrl } from '../../api/client';
 import Loader from '../../components/common/Loader';
 import { formatPrice } from '../../components/common/PriceTag';
 import { btnDark, inputClass } from '../../styles/ui';
@@ -69,7 +69,7 @@ export default function AdminProducts() {
                 <tr key={p._id} className="border-t border-taupe/10">
                   <td className="flex items-center gap-3 px-4 py-3">
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded bg-ivory-dark">
-                      {p.images?.[0] && <img src={p.images[0]} alt="" className="h-full w-full object-cover" />}
+                      {p.images?.[0] && <img src={resolveImageUrl(p.images[0])} alt="" className="h-full w-full object-cover" />}
                     </div>
                     <span className="font-medium text-ink">{p.name}</span>
                   </td>
