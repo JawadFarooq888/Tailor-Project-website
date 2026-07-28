@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: tailor-boutique-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://tailor-project-pink.vercel.app
+      - key: MONGO_URI
+        sync: false
